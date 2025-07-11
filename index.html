@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>2025 Vergi Avantajı Hesaplayıcı</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>2025 Akıllı Vergi Hesaplayıcı</h1>
+
+    <div class="btn-group">
+      <button id="btnBinek" onclick="selectVehicle('binek')">🚗 Binek</button>
+      <button id="btnTicari" onclick="selectVehicle('ticari')">🚚 Ticari</button>
+      <button id="btnMotor" onclick="selectVehicle('motor')">🏍️ Motor</button>
+    </div>
+
+    <label><input type="checkbox" id="isZero" onchange="calculate()" /> Sıfır Araç mı?</label>
+    <label><input type="checkbox" id="isLeased" onchange="calculate()" /> Kiralık Araç mı?</label>
+
+    <div class="row">
+      <div class="col">
+        <label>Toplam Alış Fiyatı (KDV + ÖTV Dahil)</label>
+        <input type="text" id="totalPrice" />
+
+        <label>Silindir Hacmi (cm³)</label>
+        <input type="text" id="cc" />
+
+        <label>Araç Yaşı</label>
+        <select id="age">
+          <option value="1">1-3 Yaş</option>
+          <option value="2">4-6 Yaş</option>
+          <option value="3">7-11 Yaş</option>
+          <option value="4">12-15 Yaş</option>
+          <option value="5">16+ Yaş</option>
+        </select>
+
+        <label>Kullanım Süresi (Ay)</label>
+        <input type="text" id="duration" />
+
+        <label>Satış Fiyatı (KDV Dahil)</label>
+        <input type="text" id="salePrice" />
+      </div>
+
+      <div class="col">
+        <div class="summary" id="summaryBox">Verileri girerek hesaplama yapın.</div>
+        <canvas id="chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
