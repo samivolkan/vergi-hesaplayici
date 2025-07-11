@@ -21,6 +21,18 @@ function temizleVirgul(val) {
   return val.replace(/\./g, "").replace(",", ".");
 }
 
+
+let seciliTur = 'arac';
+
+function secimYap(tur) {
+  seciliTur = tur;
+
+  document.getElementById('secimArac').style.backgroundColor = (tur === 'arac') ? '#d1e7dd' : '';
+  document.getElementById('secimMotor').style.backgroundColor = (tur === 'motor') ? '#d1e7dd' : '';
+
+  hesapla(); // yeniden hesaplama tetikle
+}
+
 </script>
   <style>
     body { font-family: Arial; padding: 2rem; background: #f0f2f5; }
@@ -54,7 +66,19 @@ function temizleVirgul(val) {
         .then(reg => console.log("SW registered"))
         .catch(err => console.log("SW failed", err));
     }
-  </script>
+  
+let seciliTur = 'arac';
+
+function secimYap(tur) {
+  seciliTur = tur;
+
+  document.getElementById('secimArac').style.backgroundColor = (tur === 'arac') ? '#d1e7dd' : '';
+  document.getElementById('secimMotor').style.backgroundColor = (tur === 'motor') ? '#d1e7dd' : '';
+
+  hesapla(); // yeniden hesaplama tetikle
+}
+
+</script>
 
 </head>
 <body>
@@ -210,6 +234,18 @@ function formatSayi(el) {
 
 function temizleVirgul(val) {
   return val.replace(/\./g, "").replace(",", ".");
+}
+
+
+let seciliTur = 'arac';
+
+function secimYap(tur) {
+  seciliTur = tur;
+
+  document.getElementById('secimArac').style.backgroundColor = (tur === 'arac') ? '#d1e7dd' : '';
+  document.getElementById('secimMotor').style.backgroundColor = (tur === 'motor') ? '#d1e7dd' : '';
+
+  hesapla(); // yeniden hesaplama tetikle
 }
 
 </script>
