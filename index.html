@@ -5,7 +5,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Vergi Avantaj Hesaplayıcı (Araç / Motor)</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+function formatSayi(el) {
+  let val = el.value.replace(/[^0-9]/g, "");
+  if (val === "") {
+    el.value = "";
+    hesapla();
+    return;
+  }
+  el.value = Number(val).toLocaleString("tr-TR");
+  hesapla();
+}
+
+function temizleVirgul(val) {
+  return val.replace(/\./g, "").replace(",", ".");
+}
+
+</script>
   <style>
     body { font-family: Arial; padding: 2rem; background: #f0f2f5; }
     .container { display: flex; gap: 2rem; flex-wrap: wrap; }
@@ -42,25 +58,25 @@
       </select>
 
       <label>KDV Dahil Alış Bedeli:</label>
-      <input type="number" id="alis" value="215000" oninput="hesapla()">
+      <input type="text" oninput="formatSayi(this)" id="alis" value="215000" oninput="hesapla()">
 
       <label>Satış Bedeli:</label>
-      <input type="number" id="satis" value="132000" oninput="hesapla()">
+      <input type="text" oninput="formatSayi(this)" id="satis" value="132000" oninput="hesapla()">
 
       <label>Kullanım Süresi (ay):</label>
-      <input type="number" id="sure" value="18" oninput="hesapla()">
+      <input type="text" oninput="formatSayi(this)" id="sure" value="18" oninput="hesapla()">
 
       <label>ÖTV:</label>
-      <input type="number" id="otv" value="15000" oninput="hesapla()">
+      <input type="text" oninput="formatSayi(this)" id="otv" value="15000" oninput="hesapla()">
 
       <label>MTV:</label>
-      <input type="number" id="mtv" value="3000" oninput="hesapla()">
+      <input type="text" oninput="formatSayi(this)" id="mtv" value="3000" oninput="hesapla()">
 
       <label>Sigorta:</label>
-      <input type="number" id="sigorta" value="2500" oninput="hesapla()">
+      <input type="text" oninput="formatSayi(this)" id="sigorta" value="2500" oninput="hesapla()">
 
       <label>Bakım Gideri:</label>
-      <input type="number" id="bakim" value="4000" oninput="hesapla()">
+      <input type="text" oninput="formatSayi(this)" id="bakim" value="4000" oninput="hesapla()">
 
       <div class="optimum-box" id="tavsiye"></div>
     </div>
@@ -106,13 +122,13 @@
     }
 
     function hesapla() {
-      let alis = parseFloat(document.getElementById('alis').value) || 0;
-      let satis = parseFloat(document.getElementById('satis').value) || 0;
+      let alis = Number(temizleVirgul(document.getElementById("alis").value)) || 0;
+      let satis = Number(temizleVirgul(document.getElementById("satis").value)) || 0;
       let sure = parseInt(document.getElementById('sure').value) || 0;
-      let otv = parseFloat(document.getElementById('otv').value) || 0;
-      let mtv = parseFloat(document.getElementById('mtv').value) || 0;
-      let sigorta = parseFloat(document.getElementById('sigorta').value) || 0;
-      let bakim = parseFloat(document.getElementById('bakim').value) || 0;
+      let otv = Number(temizleVirgul(document.getElementById("otv").value)) || 0;
+      let mtv = Number(temizleVirgul(document.getElementById("mtv").value)) || 0;
+      let sigorta = Number(temizleVirgul(document.getElementById("sigorta").value)) || 0;
+      let bakim = Number(temizleVirgul(document.getElementById("bakim").value)) || 0;
       let alimTipi = document.getElementById('alimsinifi').value;
 
       let kdvOrani = 0.20;
@@ -170,6 +186,22 @@
     }
 
     window.onload = hesapla;
-  </script>
+  
+function formatSayi(el) {
+  let val = el.value.replace(/[^0-9]/g, "");
+  if (val === "") {
+    el.value = "";
+    hesapla();
+    return;
+  }
+  el.value = Number(val).toLocaleString("tr-TR");
+  hesapla();
+}
+
+function temizleVirgul(val) {
+  return val.replace(/\./g, "").replace(",", ".");
+}
+
+</script>
 </body>
 </html>
