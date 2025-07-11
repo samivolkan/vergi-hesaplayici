@@ -46,6 +46,16 @@ function temizleVirgul(val) {
       border-radius: 6px;
     }
   </style>
+
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log("SW registered"))
+        .catch(err => console.log("SW failed", err));
+    }
+  </script>
+
 </head>
 <body>
   <h1>Şirket Aracı / Motoru Vergi Avantaj Hesaplayıcı</h1>
