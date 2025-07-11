@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Akıllı Vergi Hesaplayıcı</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Akıllı Vergi Hesaplayıcı</h1>
+    <div class="btn-group">
+        <button id="btnArac" onclick="selectType('arac')">🚗 Araç</button>
+        <button id="btnMotor" onclick="selectType('motor')">🏍️ Motor</button>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>Toplam Alış Fiyatı (KDV + ÖTV Dahil)</label>
+            <input type="number" id="totalPrice">
+            <label>Silindir Hacmi (cm³)</label>
+            <input type="number" id="cc">
+            <label>Araç Yaşı</label>
+            <select id="age">
+                <option value="1">1-3 Yaş</option>
+                <option value="2">4-6 Yaş</option>
+                <option value="3">7-11 Yaş</option>
+                <option value="4">12-15 Yaş</option>
+                <option value="5">16+ Yaş</option>
+            </select>
+            <label>Kullanım Süresi (Ay)</label>
+            <input type="number" id="duration" value="6">
+        </div>
+        <div class="col">
+            <div class="summary" id="summaryBox">Hesaplama için verileri giriniz.</div>
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+</div>
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
