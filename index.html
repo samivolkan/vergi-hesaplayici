@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0a9396" />
+    <link rel="stylesheet" href="style.css" />
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js');
+      }
+    </script>
+    <title>Vergi Hesaplayıcı</title>
+</head>
+<body>
+    <h1>🚗 Sıfır Araç Vergi Avantajı Hesaplama</h1>
+
+    <div class="container">
+        <form id="vergiForm">
+            <label>Araç Alış Fiyatı (KDV + ÖTV Dahil):</label>
+            <input type="text" id="alisFiyat" placeholder="1.200.000" />
+
+            <label>Motor Hacmi:</label>
+            <div class="button-group" id="motorHacmiGroup">
+                <button type="button" data-value="1300">0-1300cc</button>
+                <button type="button" data-value="1600">1301-1600cc</button>
+                <button type="button" data-value="2000">1601-2000cc</button>
+                <button type="button" data-value="2500">2001-2500cc</button>
+            </div>
+
+            <label>Kaç Ay Sonra Satılacak?</label>
+            <input type="number" id="satisSuresi" placeholder="Örn: 12" />
+
+            <label>Sabit Giderler:</label>
+            <input type="text" id="mtv" placeholder="MTV" />
+            <input type="text" id="sigorta" placeholder="Sigorta" />
+            <input type="text" id="bakim" placeholder="Bakım" />
+            <input type="text" id="yakit" placeholder="Yakıt" />
+
+            <button type="submit">Hesapla</button>
+        </form>
+
+        <div id="sonuc"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
