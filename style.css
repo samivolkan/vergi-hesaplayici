@@ -1,0 +1,19 @@
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+input {
+    padding: 8px;
+    font-size: 16px;
+    width: 320px;
+    margin-bottom: 10px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+#sonuc {
+    margin-top: 30px;
+    font-weight: bold;
+}

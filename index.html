@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Vergi Hesaplayıcı</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Vergi Hesaplayıcı (Sıfır Araçlar İçin)</h2>
+
+    <label for="alis_fiyati">KDV + ÖTV Dahil Alış Fiyatı (₺):</label>
+    <input type="text" id="alis_fiyati" oninput="formatNumber(this)"><br><br>
+
+    <label for="vergisiz_fiyat">KDV + ÖTV Hariç Alış Fiyatı (₺):</label>
+    <input type="text" id="vergisiz_fiyat" oninput="formatNumber(this)"><br><br>
+
+    <label for="sat_fiyati">Satış Fiyatı (₺):</label>
+    <input type="text" id="sat_fiyati" oninput="formatNumber(this)"><br><br>
+
+    <button onclick="hesapla()">Vergi Avantajını Hesapla</button>
+
+    <div id="sonuc"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
