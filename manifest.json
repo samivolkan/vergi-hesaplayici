@@ -1,0 +1,14 @@
+
+{
+  "name": "Vergi Hesaplayıcı",
+  "short_name": "VergiApp",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0a9396",
+  "icons": [{
+    "src": "icon.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}
