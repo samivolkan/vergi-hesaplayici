@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>V9 - Vergi Hesaplayıcı</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f9f9f9; }
+        .container { display: flex; flex-direction: row; gap: 30px; }
+        .input-section, .output-section { flex: 1; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; }
+        label { display: block; margin-top: 15px; }
+        input, select, button { padding: 8px; margin-top: 5px; width: 100%; box-sizing: border-box; }
+        .button-group button { width: auto; margin-right: 10px; }
+        .active { background-color: #0d6efd; color: white; }
+        .chart { margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <h1>V9 - Akıllı Vergi Avantajı Hesaplayıcı</h1>
+    <div class="container">
+        <div class="input-section">
+            <h2>Girdi Bilgileri</h2>
+            <label>Alış Bedeli (KDV ve ÖTV dahil)</label>
+            <input type="text" id="alisBedeli" placeholder="Örn: 1.200.000" />
+
+            <label>Motor Hacmi</label>
+            <div class="button-group" id="motorButtons">
+                <button data-value="1300">≤1300 cm³</button>
+                <button data-value="1600">≤1600 cm³</button>
+                <button data-value="2000">≤2000 cm³</button>
+                <button data-value="2500">≤2500 cm³</button>
+            </div>
+
+            <label>Satış Süresi</label>
+            <div class="button-group" id="satisButtons">
+                <button data-value="6">6 Ay</button>
+                <button data-value="12">12 Ay</button>
+                <button data-value="18">18 Ay</button>
+                <button data-value="24">24 Ay</button>
+            </div>
+
+            <label>Yıllık Giderler (Toplam)</label>
+            <input type="text" id="gider" placeholder="Örn: 35.000" />
+
+            <button onclick="hesapla()">HESAPLA</button>
+        </div>
+        <div class="output-section">
+            <h2>Sonuçlar</h2>
+            <div id="sonuclar"></div>
+            <canvas id="vergiChart" class="chart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let motor = 1600, sure = 12;
+
+        document.querySelectorAll("#motorButtons button").forEach(btn => {
+            btn.onclick = () => {
+                motor = parseInt(btn.dataset.value);
+                document.querySelectorAll("#motorButtons button").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+            }
+        });
+
+        document.querySelectorAll("#satisButtons button").forEach(btn => {
+            btn.onclick = () => {
+                sure = parseInt(btn.dataset.value);
+                document.querySelectorAll("#satisButtons button").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+            }
+        });
+
+        function formatNumber(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function hesapla() {
+            const alis = parseFloat(document.getElementById("alisBedeli").value.replace(/,/g, ""));
+            const gider = parseFloat(document.getElementById("gider").value.replace(/,/g, ""));
+            if (isNaN(alis) || isNaN(gider)) return alert("Lütfen tüm alanları doldurun.");
+
+            let otvOran = motor <= 1300 ? 0.45 : motor <= 1600 ? 0.60 : motor <= 2000 ? 1.30 : 1.50;
+            let otvHaric = alis / (1 + 0.20 + otvOran);
+            let otv = otvHaric * otvOran;
+            let kdv = otvHaric * 0.20;
+
+            let amortisman = (otvHaric <= 1100000 ? otvHaric : 1100000) / sure * 12;
+            let yazilabilirGider = (gider + amortisman + otv) * 0.70;
+            let vergiAvantaji = yazilabilirGider * 0.25;
+
+            document.getElementById("sonuclar").innerHTML = `
+                <p>ÖTV: <b>${formatNumber(otv.toFixed(2))} TL</b></p>
+                <p>KDV: <b>${formatNumber(kdv.toFixed(2))} TL</b></p>
+                <p>Yıllık Amortisman: <b>${formatNumber(amortisman.toFixed(2))} TL</b></p>
+                <p>Gider Yazılabilir Tutar (%70): <b>${formatNumber(yazilabilirGider.toFixed(2))} TL</b></p>
+                <p><b>Toplam Vergi Avantajı: ${formatNumber(vergiAvantaji.toFixed(2))} TL</b></p>
+            `;
+
+            new Chart(document.getElementById("vergiChart"), {
+                type: 'bar',
+                data: {
+                    labels: ["Amortisman", "ÖTV", "Gider"],
+                    datasets: [{
+                        label: "Yazılabilir Gider Tutarları",
+                        data: [amortisman, otv, gider],
+                        backgroundColor: ["#4e79a7", "#f28e2b", "#76b7b2"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
