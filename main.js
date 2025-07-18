@@ -1,1 +1,0 @@
-console.log('Yapay zeka destekli hesaplama hazırlanıyor...');
