@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vergi Hesaplayıcı V8</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Vergi Hesaplayıcı V8</h1>
+    <div id="inputs">
+      <label for="purchasePrice">Araç Alış Bedeli (₺):</label>
+      <input type="text" id="purchasePrice" placeholder="Örn: 1,200,000" />
+
+      <label for="salePeriod">Kaç Ay Sonra Satılacak?</label>
+      <div id="salePeriod">
+        <button onclick="selectPeriod(6)">6 Ay</button>
+        <button onclick="selectPeriod(12)">12 Ay</button>
+        <button onclick="selectPeriod(18)">18 Ay</button>
+        <button onclick="selectPeriod(24)">24 Ay</button>
+      </div>
+
+      <label for="engineSize">Motor Hacmi Seçin:</label>
+      <div id="engineButtons">
+        <button onclick="selectEngine(1250)">≤1250cc</button>
+        <button onclick="selectEngine(1600)">≤1600cc</button>
+        <button onclick="selectEngine(2000)">≤2000cc</button>
+        <button onclick="selectEngine(2500)">>2000cc</button>
+      </div>
+
+      <button onclick="calculate()">Hesapla</button>
+    </div>
+
+    <div id="results">
+      <canvas id="chart" width="400" height="200"></canvas>
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
