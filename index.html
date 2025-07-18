@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Vergi Hesaplayıcı V8 Final</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 900px; margin: auto; }
+        input, button { margin: 5px 0; padding: 5px; width: 100%; }
+        .butonlar div { display: inline-block; padding: 10px; margin: 5px; background: #e0e0e0; border-radius: 8px; cursor: pointer; }
+        .butonlar div.selected { background: #4caf50; color: white; }
+        canvas { width: 100% !important; height: 300px !important; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>V8 - Araç Vergi Avantajı Hesaplayıcı</h2>
+
+    <label>Satın Alma Tutarı (KDV & ÖTV dahil)</label>
+    <input id="alis" placeholder="Örn: 2,100,000" oninput="formatVirgullu(this)" />
+
+    <label>Satış Tutarı</label>
+    <input id="satis" placeholder="Örn: 2,400,000" oninput="formatVirgullu(this)" />
+
+    <label>Satış Süresi</label>
+    <div class="butonlar" id="sureler">
+        <div data-value="6">6 Ay</div>
+        <div data-value="12">12 Ay</div>
+        <div data-value="18">18 Ay</div>
+        <div data-value="24">24 Ay</div>
+    </div>
+
+    <label>Motor Hacmi</label>
+    <div class="butonlar" id="motorlar">
+        <div data-value="1300">≤1300cc</div>
+        <div data-value="1600">≤1600cc</div>
+        <div data-value="1800">≤1800cc</div>
+        <div data-value="2000">≤2000cc</div>
+    </div>
+
+    <button onclick="hesapla()">Hesapla</button>
+    <div id="sonuc"></div>
+    <canvas id="grafik"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function formatVirgullu(input) {
+            let value = input.value.replace(/[^0-9]/g, "");
+            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        let sure = 6;
+        let motor = 1300;
+        document.querySelectorAll("#sureler div").forEach(btn => {
+            btn.onclick = () => {
+                sure = parseInt(btn.dataset.value);
+                document.querySelectorAll("#sureler div").forEach(b => b.classList.remove("selected"));
+                btn.classList.add("selected");
+            };
+        });
+
+        document.querySelectorAll("#motorlar div").forEach(btn => {
+            btn.onclick = () => {
+                motor = parseInt(btn.dataset.value);
+                document.querySelectorAll("#motorlar div").forEach(b => b.classList.remove("selected"));
+                btn.classList.add("selected");
+            };
+        });
+
+        function parseNumber(str) {
+            return parseFloat(str.replace(/,/g, ""));
+        }
+
+        function hesapla() {
+            const alis = parseNumber(document.getElementById("alis").value);
+            const satis = parseNumber(document.getElementById("satis").value);
+
+            let amortismanOran = 1 / (sure / 12); // hızlandırılmış amortisman
+            let amortisman = alis * amortismanOran;
+            if (amortisman > alis) amortisman = alis;
+
+            let giderler = alis * 0.10; // sabit tahmini gider
+            let toplamGider = amortisman + giderler;
+            let vergiAvantaji = toplamGider * 0.25;
+
+            document.getElementById("sonuc").innerHTML = `
+                <p><b>Amortisman:</b> ${amortisman.toLocaleString()} TL</p>
+                <p><b>Diğer Giderler:</b> ${giderler.toLocaleString()} TL</p>
+                <p><b>Toplam Gider:</b> ${toplamGider.toLocaleString()} TL</p>
+                <p><b>Vergi Avantajı:</b> ${vergiAvantaji.toLocaleString()} TL</p>
+            `;
+
+            new Chart(document.getElementById("grafik"), {
+                type: 'bar',
+                data: {
+                    labels: ['Amortisman', 'Gider', 'Avantaj'],
+                    datasets: [{
+                        label: 'Tutar (TL)',
+                        data: [amortisman, giderler, vergiAvantaji],
+                        backgroundColor: ['#2196F3', '#FFC107', '#4CAF50']
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+    </script>
+</body>
+</html>
