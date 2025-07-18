@@ -1,0 +1,24 @@
+
+<div id="vergiAvantajiSonucu">
+  <h3>Vergi Avantajı Kalemleri</h3>
+  <ul id="vergiKalemListesi">
+    <!-- JavaScript ile doldurulacak -->
+  </ul>
+  <h4 id="toplamAvantaj"></h4>
+</div>
+
+<script>
+function gosterVergiAvantaji(sonuc) {
+    const liste = document.getElementById("vergiKalemListesi");
+    const toplam = document.getElementById("toplamAvantaj");
+
+    liste.innerHTML = "";
+    for (const kalem in sonuc.kalemler) {
+        const li = document.createElement("li");
+        li.textContent = kalem.toUpperCase() + ": " + sonuc.kalemler[kalem].toLocaleString("tr-TR") + " TL";
+        liste.appendChild(li);
+    }
+
+    toplam.textContent = "Toplam Vergi Avantajı: " + sonuc.toplam.toLocaleString("tr-TR") + " TL";
+}
+</script>
