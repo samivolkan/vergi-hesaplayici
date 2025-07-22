@@ -1,0 +1,7 @@
+
+body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+h1 { color: #333; }
+form label { display: block; margin: 10px 0; }
+input { padding: 5px; margin-left: 10px; }
+button { margin: 5px; padding: 10px; cursor: pointer; }
+button.selected { background-color: #28a745; color: white; }
