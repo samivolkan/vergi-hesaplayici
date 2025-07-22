@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vergi Hesaplayıcı</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <h1>Vergi Avantaj Hesaplayıcı</h1>
+    <div class="input-section">
+      <label for="price">Araç Alış Fiyatı (TL):</label>
+      <input type="text" id="price" placeholder="Örn: 1.200.000" />
+
+      <label for="salesPrice">Satış Fiyatı (TL):</label>
+      <input type="text" id="salesPrice" placeholder="Örn: 1.400.000" />
+
+      <div class="motor-options">
+        <label>Motor Hacmi:</label>
+        <button class="motor-btn" data-val="1300">≤1300</button>
+        <button class="motor-btn" data-val="1600">≤1600</button>
+        <button class="motor-btn" data-val="2000">≤2000</button>
+        <button class="motor-btn" data-val="2500">≤2500</button>
+        <button class="motor-btn" data-val="3000">≤3000</button>
+      </div>
+
+      <div class="duration-options">
+        <label>Satış Süresi:</label>
+        <button class="duration-btn" data-val="6">6 Ay</button>
+        <button class="duration-btn" data-val="12">1 Yıl</button>
+        <button class="duration-btn" data-val="18">18 Ay</button>
+        <button class="duration-btn" data-val="24">2 Yıl</button>
+      </div>
+
+      <div class="giderler">
+        <label>MTV:</label><input type="text" class="gider" data-type="mtv" placeholder="Örn: 5.000" />
+        <label>Sigorta:</label><input type="text" class="gider" data-type="sigorta" placeholder="Örn: 6.000" />
+        <label>Bakım:</label><input type="text" class="gider" data-type="bakim" placeholder="Örn: 4.000" />
+        <label>Yakıt:</label><input type="text" class="gider" data-type="yakit" placeholder="Örn: 10.000" />
+      </div>
+
+      <button onclick="hesapla()">Hesapla</button>
+    </div>
+
+    <div id="results">
+      <h2>Hesaplama Sonuçları</h2>
+      <div id="summary"></div>
+      <canvas id="chart" width="400" height="200"></canvas>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
