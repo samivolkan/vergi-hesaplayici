@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vergi Hesaplayıcı V11+</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f2f2f2; margin: 20px; }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .btn-group button {
+      width: 100%;
+      padding: 10px;
+      background-color: #e0e0e0;
+      border: none;
+      margin: 5px 0;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn-group button.active { background-color: #4CAF50; color: white; }
+    .results { margin-top: 20px; }
+    canvas { max-width: 100%; }
+    #aiAdvice { background: #f9f9f9; border-left: 5px solid #4CAF50; padding: 10px; margin-top: 20px; white-space: pre-line; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Vergi Hesaplayıcı V11+</h2>
+
+  <div class="grid">
+    <div>
+      <label>Araç Türü:</label>
+      <select id="vehicleType">
+        <option value="otomobil">Otomobil</option>
+        <option value="suv">SUV</option>
+        <option value="ticari">Ticari</option>
+      </select>
+    </div>
+  </div>
+
+  <label>Toplam Alış Fiyatı (KDV + ÖTV Dahil):</label>
+  <input type="text" id="totalPriceInput" placeholder="2.000.000">
+
+  <label>Satış Fiyatı (TL):</label>
+  <input type="text" id="sellPriceInput" placeholder="2.300.000">
+
+  <label>Motor Hacmi:</label>
+  <div class="btn-group" id="motorButtons">
+    <button data-motor="1600">1600 cc'ye kadar</button>
+    <button data-motor="2000">1601 - 2000 cc</button>
+    <button data-motor="2001">2001 cc ve üzeri</button>
+  </div>
+
+  <label>Satış Süreci:</label>
+  <div class="btn-group" id="saleTimeButtons">
+    <button data-time="6">6 Ay</button>
+    <button data-time="12">1 Yıl</button>
+    <button data-time="18">18 Ay</button>
+    <button data-time="24">2 Yıl</button>
+  </div>
+
+  <h3>Sabit Giderler (Yıllık)</h3>
+  <div class="grid">
+    <input type="text" id="mtv" placeholder="MTV">
+    <input type="text" id="fuel" placeholder="Yakıt">
+    <input type="text" id="insurance" placeholder="Sigorta">
+    <input type="text" id="maintenance" placeholder="Bakım">
+  </div>
+
+  <button onclick="calculate()">Hesapla</button>
+  <button onclick="exportPDF()">PDF Olarak Kaydet</button>
+
+  <div class="results">
+    <h3>Hesaplama Sonuçları</h3>
+    <div id="output"></div>
+    <canvas id="chart"></canvas>
+    <div id="aiAdvice"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  let selectedMotor = 1600;
+  let selectedTime = 6;
+  let lastOutput = '';
+
+  document.querySelectorAll('#motorButtons button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#motorButtons button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedMotor = parseInt(btn.getAttribute('data-motor'));
+    }
+  });
+  document.querySelectorAll('#saleTimeButtons button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#saleTimeButtons button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedTime = parseInt(btn.getAttribute('data-time'));
+    }
+  });
+
+  const inputIds = ['totalPriceInput', 'sellPriceInput', 'mtv', 'fuel', 'insurance', 'maintenance'];
+  inputIds.forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => {
+      const raw = el.value.replace(/\./g, '').replace(',', '.');
+      if (!isNaN(raw) && raw !== '') {
+        const num = parseFloat(raw);
+        el.value = formatWithDots(num);
+      }
+    });
+  });
+
+  function formatWithDots(x) {
+    return x.toLocaleString('tr-TR');
+  }
+  function parseNum(val) {
+    return parseFloat(val.replace(/\./g, '').replace(',', '.')) || 0;
+  }
+
+  function calculate() {
+    const totalPrice = parseNum(document.getElementById('totalPriceInput').value);
+    const sellPrice = parseNum(document.getElementById('sellPriceInput').value);
+    const mtv = parseNum(document.getElementById('mtv').value);
+    const fuel = parseNum(document.getElementById('fuel').value);
+    const insurance = parseNum(document.getElementById('insurance').value);
+    const maintenance = parseNum(document.getElementById('maintenance').value);
+
+    const price = totalPrice / 1.96;
+    const otv = price * 0.80;
+    const kdv = (price + otv) * 0.20;
+    const saleKdv = sellPrice * 0.20;
+    const amortization = Math.min(price, 1100000);
+    const annualExpenses = mtv + fuel + insurance + maintenance;
+    const deductible = amortization + (annualExpenses * 0.7);
+    const taxAdvantage = deductible * 0.25;
+
+    const output = `
+      Toplam Fiyat: ${formatWithDots(totalPrice)} TL\n
+      ÖTV Tutarı: ${formatWithDots(otv)} TL\n
+      KDV Tutarı: ${formatWithDots(kdv)} TL\n
+      Satış KDV Avantajı: ${formatWithDots(saleKdv)} TL\n
+      Amortisman: ${formatWithDots(amortization)} TL\n
+      Giderler (%70): ${formatWithDots(annualExpenses * 0.7)} TL\n
+      Vergi Kazancı (%25): ${formatWithDots(taxAdvantage)} TL\n
+    `;
+
+    lastOutput = output;
+    document.getElementById('output').innerText = output;
+
+    new Chart(document.getElementById('chart'), {
+      type: 'bar',
+      data: {
+        labels: ['ÖTV', 'KDV', 'Satış KDV', 'Amortisman', 'Giderler'],
+        datasets: [{
+          label: 'Vergi Avantajı',
+          data: [otv, kdv, saleKdv, amortization, annualExpenses * 0.7],
+          backgroundColor: ['#f44336', '#2196f3', '#9c27b0', '#4caf50', '#ff9800']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }, title: { display: true, text: 'Vergi Avantajı Dağılımı' } }
+      }
+    });
+
+    let suggestion = '';
+    if (selectedTime <= 12) suggestion += 'Satış süresi kısa, amortisman avantajı düşük olabilir.\n';
+    if (selectedMotor > 1600) suggestion += 'Motor hacmi yüksek, vergi yükü artabilir.\n';
+    suggestion += 'Giderlerinizi artırmak, vergi avantajını da artırır.';
+    document.getElementById('aiAdvice').innerText = suggestion;
+  }
+
+  function exportPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text('Vergi Hesaplama Sonuçları', 10, 10);
+    doc.text(lastOutput, 10, 20);
+    doc.save('vergi_hesaplama_sonuclari.pdf');
+  }
+</script>
+</body>
+</html>
