@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)file:///C:/Users/Samivolkannnn/Downloads/altin_gumus_parite.html -->
+<html lang="tr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Altın / Gümüş Parite Sinyali</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #333;
+    }
+    #parite {
+      font-size: 28px;
+      margin: 20px 0;
+    }
+    #sinyal {
+      font-size: 24px;
+      font-weight: bold;
+      padding: 20px;
+      border-radius: 12px;
+      display: inline-block;
+      min-width: 300px;
+    }
+    .buy {
+      background: #c8f7c5;
+      color: #1e824c;
+      border: 2px solid #1e824c;
+    }
+    .sell {
+      background: #f7c5c5;
+      color: #96281b;
+      border: 2px solid #96281b;
+    }
+    .neutral {
+      background: #dfe6e9;
+      color: #2d3436;
+      border: 2px solid #636e72;
+    }
+  </style>
+</head>
+<body>
+  <h1>Altın / Gümüş Parite Takibi</h1>
+  <div id="parite">Veri alınamadı.</div>
+  <div id="sinyal" class="neutral">Sinyal Bekleniyor...</div>
+
+  <script>
+    async function getParite() {
+      try {
+        // Yahoo Finance üzerinden altın (XAUUSD) ve gümüş (XAGUSD) fiyatlarını çekiyoruz
+        let response = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=XAUUSD=X,XAGUSD=X");
+        if (!response.ok) throw new Error("API hatası: " + response.status);
+
+        let data = await response.json();
+        let results = data.quoteResponse.result;
+
+        let xau = results.find(r => r.symbol === "XAUUSD=X")?.regularMarketPrice;
+        let xag = results.find(r => r.symbol === "XAGUSD=X")?.regularMarketPrice;
+
+        if (!xau || !xag) throw new Error("Veri eksik");
+
+        let parite = xau / xag; // Altın/Gümüş oranı
+
+        document.getElementById("parite").innerText = "Güncel Parite: " + parite.toFixed(2);
+
+        let sinyalDiv = document.getElementById("sinyal");
+        if (parite > 87) {
+          sinyalDiv.innerText = "Altın SAT - Gümüş AL";
+          sinyalDiv.className = "sell";
+        } else if (parite > 79) {
+          sinyalDiv.innerText = "Gümüş SAT - Altın AL";
+          sinyalDiv.className = "buy";
+        } else {
+          sinyalDiv.innerText = "Beklemede";
+          sinyalDiv.className = "neutral";
+        }
+      } catch (e) {
+        document.getElementById("parite").innerText = "Veri alınamadı.";
+        console.error(e);
+      }
+    }
+
+    getParite();
+    setInterval(getParite, 60000); // her 1 dakikada bir yenile
+  </script>
+
+</body></html>
